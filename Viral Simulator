@@ -1,0 +1,276 @@
+local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
+local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/SaveManager.lua"))()
+local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
+
+-- Create the main window
+local MainWindow = Fluent:CreateWindow({
+    Title = "💪Viral Simulator Made by @co9f💪",
+    SubTitle = "",
+    TabWidth = 160,
+    Size = UDim2.fromOffset(580, 460),
+    Acrylic = true,
+    Theme = "Dark",
+    MinimizeKey = Enum.KeyCode.LeftControl
+})
+
+local Tabs = {
+    Main = MainWindow:AddTab({ Title = "Main", Icon = "" }),
+    Extra = MainWindow:AddTab({ Title = "Extra", Icon = "layout-template" }),
+    Settings = MainWindow:AddTab({ Title = "Settings", Icon = "settings" })
+}
+
+local Options = Fluent.Options
+
+-- Notification
+Fluent:Notify({
+    Title = "Notification",
+    Content = "This is a notification",
+    SubContent = "SubContent",
+    Duration = 5
+})
+
+-- Main Tab Controls
+Tabs.Main:AddParagraph({
+    Title = "Made By @co9f Inspired by Nicuse",
+    Content = "Fluent Ui Productions, Credits for script is Discord: co9f"
+})
+
+-- Extra Tab Controls
+local DebugToggle = Tabs.Extra:AddToggle("DebugMode", { Title = "Enable Debug Mode", Default = false })
+DebugToggle:OnChanged(function()
+    print("Debug Mode:", DebugToggle.Value and "On" or "Off")
+end)
+
+-- 🥚 Auto Hatch Dropdown (Now includes additional eggs)
+local SelectedEgg = nil
+local AutoHatchActive = false
+
+local EggDropdown = Tabs.Extra:AddDropdown("EggAutoHatch", {
+    Title = "Auto Hatch Egg",
+    Description = "Select an egg to auto open.",
+    Values = {
+        "None", "Basic Egg", "Brown Egg", "Earth Egg", "Poison Egg", "Treasure Egg", "Ice Egg",
+        "Beach Egg", "Coconut Egg", "Magma Egg", "Star Egg", "Volcano Egg",
+        "Military Egg", "Nuclear Egg", "Robot Egg", "Royal Egg", "Lightning Egg", "Superhero Egg", "Future Egg"
+    },
+    Default = "None",
+    Multi = false
+})
+
+EggDropdown:OnChanged(function(Value)
+    AutoHatchActive = false
+    SelectedEgg = nil
+
+    if Value ~= "None" then
+        AutoHatchActive = true
+        if Value == "Basic Egg" then
+            SelectedEgg = "Basic"
+        elseif Value == "Brown Egg" then
+            SelectedEgg = "Brown"
+        elseif Value == "Earth Egg" then
+            SelectedEgg = "Earth"
+        elseif Value == "Poison Egg" then
+            SelectedEgg = "Poison"
+        elseif Value == "Treasure Egg" then
+            SelectedEgg = "Treasure"
+        elseif Value == "Ice Egg" then
+            SelectedEgg = "Ice"
+        elseif Value == "Beach Egg" then
+            SelectedEgg = "Beach"
+        elseif Value == "Coconut Egg" then
+            SelectedEgg = "Island"
+        elseif Value == "Magma Egg" then
+            SelectedEgg = "Magma"
+        elseif Value == "Star Egg" then
+            SelectedEgg = "Light"
+        elseif Value == "Volcano Egg" then
+            SelectedEgg = "Volcano"
+        elseif Value == "Military Egg" then
+            SelectedEgg = "Military"
+        elseif Value == "Nuclear Egg" then
+            SelectedEgg = "Nuclear"
+        elseif Value == "Robot Egg" then
+            SelectedEgg = "Robot"
+        elseif Value == "Royal Egg" then
+            SelectedEgg = "Royal"
+        elseif Value == "Lightning Egg" then
+            SelectedEgg = "Lightning"
+        elseif Value == "Superhero Egg" then
+            SelectedEgg = "Hero"
+        elseif Value == "Future Egg" then
+            SelectedEgg = "Future"
+        end
+
+        task.spawn(function()
+            while AutoHatchActive and SelectedEgg do
+                local args = {
+                    [1] = SelectedEgg,
+                    [2] = 0,
+                    [3] = 1
+                }
+                game:GetService("ReplicatedStorage"):WaitForChild("RemoteEvents"):WaitForChild("Eggs"):WaitForChild("Hatch"):InvokeServer(unpack(args))
+                task.wait(1)
+            end
+        end)
+    end
+end)
+
+-- Input Section
+Tabs.Extra:AddParagraph({ Title = "Enter Gems", Content = "Type the amount of gems and press Enter." })
+local Input = Tabs.Extra:AddInput("GemInput", {
+    Title = "Gem Amount",
+    Default = "",
+    Placeholder = "Enter number of gems...",
+    Numeric = true,
+    Finished = true,
+    Callback = function(text)
+        local number = tonumber(text)
+        if number then
+            local args = {
+                [1] = number
+            }
+            game:GetService("ReplicatedStorage"):WaitForChild("RemoteEvents"):WaitForChild("GemsGiver"):FireServer(unpack(args))
+        else
+            print("Invalid number input")
+        end
+    end
+})
+
+Tabs.Extra:AddParagraph({ Title = "Wins Giver", Content = "Type the amount of wins and press Enter." })
+local WinsInput = Tabs.Extra:AddInput("WinsInput", {
+    Title = "Wins Amount",
+    Default = "",
+    Placeholder = "Enter number of wins...",
+    Numeric = true,
+    Finished = true,
+    Callback = function(text)
+        local number = tonumber(text)
+        if number then
+            local args = {
+                [1] = number
+            }
+            game:GetService("ReplicatedStorage"):WaitForChild("RemoteEvents"):WaitForChild("WinsGiver"):FireServer(unpack(args))
+        else
+            print("Invalid number input")
+        end
+    end
+})
+
+Tabs.Extra:AddParagraph({ Title = "Fans Giver", Content = "Type the amount of Fans you want and press Enter." })
+local FansInput = Tabs.Extra:AddInput("FansInput", {
+    Title = "Fans Amount",
+    Default = "",
+    Placeholder = "Enter number of fans...",
+    Numeric = true,
+    Finished = true,
+    Callback = function(text)
+        local number = tonumber(text)
+        if number then
+            local args = {
+                [1] = number
+            }
+            game:GetService("ReplicatedStorage"):WaitForChild("RemoteEvents"):WaitForChild("AddFans"):FireServer(unpack(args))
+        else
+            print("Invalid number input")
+        end
+    end
+})
+
+-- Redeem Codes Button
+Tabs.Extra:AddButton({
+    Title = "Redeem Codes",
+    Description = "You can click this alot",
+    Callback = function()
+        local args1 = {
+            [1] = "9and4"
+        }
+        game:GetService("ReplicatedStorage"):WaitForChild("RemoteEvents"):WaitForChild("UpdCode"):FireServer(unpack(args1))
+
+        local args2 = {
+            [1] = "Jarafrets"
+        }
+        game:GetService("ReplicatedStorage"):WaitForChild("RemoteEvents"):WaitForChild("UpdCode"):FireServer(unpack(args2))
+    end
+})
+
+-- Diamond Keys Giver
+Tabs.Extra:AddInput("DiamondKeyInput", {
+    Title = "Diamond Keys Giver",
+    Default = "",
+    Placeholder = "Enter amount of Diamond Keys...",
+    Numeric = true,
+    Finished = true,
+    Callback = function(text)
+        local number = tonumber(text)
+        if number then
+            local args = {
+                [1] = "Diamond",
+                [2] = number
+            }
+            game:GetService("ReplicatedStorage"):WaitForChild("RemoteEvents"):WaitForChild("KeyPurchase"):FireServer(unpack(args))
+        else
+            print("Invalid number input")
+        end
+    end
+})
+
+-- Gold Keys Giver
+Tabs.Extra:AddInput("GoldKeyInput", {
+    Title = "Gold Keys Giver",
+    Default = "",
+    Placeholder = "Enter amount of Gold Keys...",
+    Numeric = true,
+    Finished = true,
+    Callback = function(text)
+        local number = tonumber(text)
+        if number then
+            local args = {
+                [1] = "Gold",
+                [2] = number
+            }
+            game:GetService("ReplicatedStorage"):WaitForChild("RemoteEvents"):WaitForChild("KeyPurchase"):FireServer(unpack(args))
+        else
+            print("Invalid number input")
+        end
+    end
+})
+
+-- Spin Giver
+Tabs.Extra:AddInput("SpinGiverInput", {
+    Title = "Spin Giver",
+    Default = "",
+    Placeholder = "Enter amount of Spins...",
+    Numeric = true,
+    Finished = true,
+    Callback = function(text)
+        local number = tonumber(text)
+        if number then
+            local args = {
+                [1] = number
+            }
+            game:GetService("ReplicatedStorage"):WaitForChild("RemoteEvents"):WaitForChild("GiveSpins"):FireServer(unpack(args))
+        else
+            print("Invalid number input")
+        end
+    end
+})
+
+-- Addons
+SaveManager:SetLibrary(Fluent)
+InterfaceManager:SetLibrary(Fluent)
+SaveManager:IgnoreThemeSettings()
+SaveManager:SetIgnoreIndexes({})
+InterfaceManager:SetFolder("FluentScriptHub")
+SaveManager:SetFolder("FluentScriptHub/specific-game")
+InterfaceManager:BuildInterfaceSection(Tabs.Settings)
+SaveManager:BuildConfigSection(Tabs.Settings)
+
+MainWindow:SelectTab(1)
+
+Fluent:Notify({
+    Title = "Fluent",
+    Content = "The script has been loaded.",
+    Duration = 8
+})
+
+SaveManager:LoadAutoloadConfig()
